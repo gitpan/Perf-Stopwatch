@@ -2,7 +2,7 @@
 
 # change 'tests => 1' to 'tests => last_test_to_print';
 
-use Test::More tests => 11;
+use Test::More tests => 12;
 BEGIN { use_ok('Perf::Stopwatch') };
 
 END {is( $loaded, 1, "module loaded");}
@@ -24,6 +24,9 @@ is( $norm->{c_lap},  0, " has initial lap=0");
 $norm->start();
 sleep(1);
 $norm->stop();
+
 $elap = $norm->getTime();
 ok( defined $elap, "");
-cmp_ok( $elap, ">=", 1, " slept for a second");
+# verifying timed sleep was 1 second w/ 20% variance
+cmp_ok( $elap, ">=", 0.98, " slept for over 0.98 seconds");
+cmp_ok( $elap, "<=", 1.02, " slept for under 1.02 seconds");
